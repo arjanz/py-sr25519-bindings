@@ -69,7 +69,7 @@ jobs:
       - name: Build ${{ matrix.platform || matrix.os }} binaries
         run: |
           pip install maturin
-          maturin build -i python${{ matrix.python-version }} -o ${{ matrix.wheels-dir }}
+          maturin build -o ${{ matrix.wheels-dir }}
 
       - name: list wheels
         run: ${{ matrix.ls || 'ls -lh' }} ${{ matrix.wheels-dir }}
