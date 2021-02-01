@@ -55,14 +55,14 @@ jobs:
           profile: minimal
           toolchain: nightly
           override: true
-      - name: Install bindings
-        run: |
-          pip install maturin
-          maturin develop
-      - name: Test with pytest
-        run: |
-          pip install pytest
-          pytest tests.py
+#      - name: Install bindings
+#        run: |
+#          pip install maturin
+#          maturin develop
+#      - name: Test with pytest
+#        run: |
+#          pip install pytest
+#          pytest tests.py
       - name: Create wheels dir
         run: |
           mkdir ${{ matrix.wheels-dir }}
