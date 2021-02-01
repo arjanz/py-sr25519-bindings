@@ -55,13 +55,20 @@ jobs:
           profile: minimal
           toolchain: nightly
           override: true
+      - name: Install bindings
+        run: |
+          pip install .
+      - name: Test with pytest
+        run: |
+          pip install pytest
+          pytest tests.py
       - name: Create wheels dir
         run: |
           mkdir ${{ matrix.wheels-dir }}
       - name: Build ${{ matrix.platform || matrix.os }} binaries
         run: |
           pip install maturin
-          maturin build -o ${{ matrix.wheels-dir }}
+          maturin build -i python${{ matrix.python-version }} -o ${{ matrix.wheels-dir }}
 
       - name: list wheels
         run: ${{ matrix.ls || 'ls -lh' }} ${{ matrix.wheels-dir }}
@@ -70,14 +77,12 @@ jobs:
         run: |
           pip install -U twine
           twine check ${{ matrix.wheels-dir }}/*
+      - name: Upload to github releases
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ matrix.wheels-dir }}/*
+          file_glob: true
+          tag: ${{ github.ref }}
 
-      - name: Install requirements
-        run: |
-          pip install -r requirements.txt
-      - name: Install bindings
-        run: |
-          pip install ${{ matrix.wheels-dir }}/*.whl
-      - name: Test with pytest
-        run: |
-          pip install pytest
-          pytest tests.py
