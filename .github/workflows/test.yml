@@ -5,21 +5,47 @@ on:
     branches:
       - master
       - develop
+    tags:
+      - '**'
   pull_request:
 
 jobs:
-  test:
-    name: Test
+  build:
+    name: build py${{ matrix.python-version }} on ${{ matrix.platform || matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-latest, macos-latest ]
-    runs-on: ${{ matrix.os }}
+        os:
+          - ubuntu
+          - macos
+          - windows
+        python-version:
+          - '3.6'
+          - '3.7'
+          - '3.8'
+          - '3.9'
+        wheels-dir:
+          - '.wheels'
+        include:
+          - os: ubuntu
+            platform: linux
+          - os: windows
+            ls: dir
+          - python-version: 3.6
+            cibw-version: cp36
+          - python-version: 3.7
+            cibw-version: cp37
+          - python-version: 3.8
+            cibw-version: cp38
+          - python-version: 3.9
+            cibw-version: cp39
+
+    runs-on: ${{ format('{0}-latest', matrix.os) }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: ${{ matrix.python-version }}
       - name: Install cffi and virtualenv
         run: pip install cffi virtualenv
       - name: Install RUST toolchain
@@ -29,16 +55,28 @@ jobs:
           profile: minimal
           toolchain: nightly
           override: true
-      - name: Build bindings
+      - name: create wheels dir
+        run: |
+          mkdir ${{ matrix.wheels-dir }}
+      - name: Build ${{ matrix.platform || matrix.os }} binaries
         run: |
           pip install maturin
-          maturin build -i python3.8
+          maturin build -i ${{ matrix.python-version }} -o ${{ matrix.wheels-dir }}
+
+      - name: list wheels
+        run: ${{ matrix.ls || 'ls -lh' }} ${{ matrix.wheels-dir }}
+
+      - name: twine check
+        run: |
+          pip install -U twine
+          twine check ${{ matrix.wheels-dir }}/*
+
       - name: Install requirements
         run: |
           pip install -r requirements.txt
       - name: Install bindings
         run: |
-          pip install target/wheels/*.whl
+          pip install ${{ matrix.wheels-dir }}/*.whl
       - name: Test with pytest
         run: |
           pip install pytest
