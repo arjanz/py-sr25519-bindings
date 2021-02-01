@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    name: build py${{ matrix.python-version }} on ${{ matrix.platform || matrix.os }}
+    name: build on ${{ matrix.platform || matrix.os }}
     strategy:
       fail-fast: false
       matrix:
@@ -31,21 +31,11 @@ jobs:
             platform: linux
           - os: windows
             ls: dir
-          - python-version: 3.6
-            cibw-version: cp36
-          - python-version: 3.7
-            cibw-version: cp37
-          - python-version: 3.8
-            cibw-version: cp38
-          - python-version: 3.9
-            cibw-version: cp39
 
-    runs-on: ${{ format('{0}-latest', matrix.os) }}
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
       - name: Install cffi and virtualenv
         run: pip install cffi virtualenv
       - name: Install RUST toolchain
