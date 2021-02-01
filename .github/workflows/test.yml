@@ -55,7 +55,7 @@ jobs:
           profile: minimal
           toolchain: nightly
           override: true
-      - name: create wheels dir
+      - name: Create wheels dir
         run: |
           mkdir ${{ matrix.wheels-dir }}
       - name: Build ${{ matrix.platform || matrix.os }} binaries
