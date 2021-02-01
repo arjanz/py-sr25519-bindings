@@ -57,7 +57,7 @@ jobs:
           override: true
       - name: Install bindings
         run: |
-          pip install .
+          maturin develop
       - name: Test with pytest
         run: |
           pip install pytest
