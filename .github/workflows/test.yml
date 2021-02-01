@@ -32,7 +32,7 @@ jobs:
           - os: windows
             ls: dir
 
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ format('{0}-latest', matrix.os) }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
