@@ -19,6 +19,11 @@ jobs:
           - ubuntu
           - macos
           - windows
+        python-version:
+          - '3.6'
+          - '3.7'
+          - '3.8'
+          - '3.9'
         wheels-dir:
           - '.wheels'
         include:
@@ -26,14 +31,6 @@ jobs:
             platform: linux
           - os: windows
             ls: dir
-          - python-version: 3.6
-            cibw-version: cp36
-          - python-version: 3.7
-            cibw-version: cp37
-          - python-version: 3.8
-            cibw-version: cp38
-          - python-version: 3.9
-            cibw-version: cp39
 
     runs-on: ${{ format('{0}-latest', matrix.os) }}
     steps:
