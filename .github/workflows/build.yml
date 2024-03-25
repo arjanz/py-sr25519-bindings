@@ -27,7 +27,7 @@ jobs:
         if: ${{ matrix.python-version != '3.7' }}
         uses: messense/maturin-action@v1
         with:
-          args: -i python --release --universal2-apple-darwin --out dist
+          args: -i python --release --target universal2-apple-darwin --out dist
           rust-toolchain: nightly-2024-02-04
       - name: Install built wheel - universal2
         if: ${{ matrix.python-version != '3.7' }}
