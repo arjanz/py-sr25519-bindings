@@ -1,10 +1,10 @@
 [build-system]
-requires = ["maturin>=0.14,<0.15"]
+requires = ["maturin>=1.5,<1.6"]
 build-backend = "maturin"
 
 [project]
 name = "py-sr25519-bindings"
-version = "0.2.0"
+version = "0.2.1"
 description = "Python bindings for schnorrkel RUST crate"
 readme = "README.md"
 requires-python = ">=3.7"
